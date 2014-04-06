@@ -35,6 +35,15 @@ jsds.BitSet = (function(){
   }
 
   /**
+   * Used internally to create a clone.
+   * @param {Array|TypedArray} arr
+   */
+  BitSet.prototype._initFromArray = function(arr) {
+    this._arr = new Uint32Array(arr);
+    return this;
+  };
+
+  /**
    * @param {number} bitIndex , the index of the bit to modify. Indices starts from 1.
    */
   BitSet.prototype.setBit = function(bitIndex) {
@@ -96,6 +105,13 @@ jsds.BitSet = (function(){
     else {
       throw new Error("BitSet 'or' operation requires both BitSet to be of equal size.");
     }
+  };
+
+  /**
+   * @returns {jsds.BitSet}
+   */
+  BitSet.prototype.clone = function() {
+    return new BitSet(0)._initFromArray(this._arr);
   };
 
   /**

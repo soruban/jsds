@@ -99,6 +99,14 @@ describe("bit set tests.", function(){
     });
   });
 
+  it("should clone correctly", function(){
+    bitset = new jsds.BitSet(100).setBit(1).setBit(10).setBit(22).setBit(33).setBit(46).setBit(99);
+    var clone = bitset.clone();
+    expect(clone[0]).toBe(bitset[0]);
+    expect(clone[1]).toBe(bitset[1]);
+    expect(clone[2]).toBe(bitset[2]);
+  });
+
   /**
    * @param {number} aNumber
    * @returns {string} the hex representation of the number.
