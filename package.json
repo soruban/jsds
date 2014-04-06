@@ -1,0 +1,27 @@
+{
+  "name": "jsds",
+  "version": "0.0.0",
+  "description": "Data structures for js",
+  "main": "",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/soruban/jsds.git"
+  },
+  "author": "Soruban",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/soruban/jsds/issues"
+  },
+  "homepage": "https://github.com/soruban/jsds",
+  "devDependencies": {
+    "karma": "~0.12.3",
+    "karma-chrome-launcher": "~0.1.3",
+    "karma-jasmine": "~0.1.5"
+  }
+}
