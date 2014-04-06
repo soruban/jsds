@@ -1,12 +1,11 @@
 describe("bit set tests.", function(){
-  var BitSet;
-  var bitset;
+  var bitset, otherBitset;
 
   beforeEach(function(){
   });
 
   afterEach(function(){
-    bitset = null;
+    bitset = otherBitset = null;
   });
 
   it("should create a BitSet to accommodate the given initial size", function(){
@@ -62,4 +61,49 @@ describe("bit set tests.", function(){
       expect(bitset.cardinality).toBe(0);
     });
   });
+
+  describe("BitSet should perform logical operation correctly", function(){
+    var bitset = new jsds.BitSet(100);
+    bitset.setBit(1).setBit(10).setBit(40).setBit(50).setBit(83);
+    var otherBitset = new jsds.BitSet(100);
+    otherBitset.setBit(2).setBit(15).setBit(40).setBit(70).setBit(83).setBit(84);
+    var errBitset = new jsds.BitSet(10);
+
+    it("should throw and error on a logical 'and' if the BitSets are of different size", function(){
+      var doAnd = function(){
+        bitset.and(errBitset);
+      };
+      expect(doAnd).toThrow();
+    });
+
+    it("should throw and error on a logical 'or' if the BitSets are of different size", function(){
+      var doOr = function(){
+        bitset.and(errBitset);
+      };
+      expect(doOr).toThrow();
+    });
+
+    it("should perform a logical 'and' correctly", function(){
+      var res = bitset.and(otherBitset);
+      expect(res[0]).toBe(0);
+      expect(hex(res[1])).toBe("0x8000000");
+      expect(hex(res[2])).toBe("0x4000");
+      expect(hex(res[3])).toBe("0x0");
+    });
+
+    it("should perform a logical 'or' correctly", function(){
+      var res = bitset.or(otherBitset);
+      expect(hex(res[1])).toBe("0x8002000");
+      expect(hex(res[2])).toBe("0x200c000");
+      expect(hex(res[3])).toBe("0x0");
+    });
+  });
+
+  /**
+   * @param {number} aNumber
+   * @returns {string} the hex representation of the number.
+   */
+  function hex(aNumber) {
+    return "0x" + aNumber.toString(16);
+  }
 });

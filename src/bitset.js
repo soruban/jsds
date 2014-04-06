@@ -63,6 +63,42 @@ jsds.BitSet = (function(){
   };
 
   /**
+   * @param {jsds.BitSet} otherBitSet
+   */
+  BitSet.prototype.and = function(otherBitSet) {
+    if(otherBitSet.size === this.size) {
+      var res = new BitSet(this.size),
+          otherArr = otherBitSet.underlyingArray;
+      for (var i = 0, count = this.size; i < count; i++) {
+        res[i] = this._arr[i] & otherArr[i];
+      }
+
+      return res;
+    }
+    else {
+      throw new Error("BitSet 'and' operation requires both BitSet to be of equal size.");
+    }
+  };
+
+  /**
+   * @param {jsds.BitSet} otherBitSet
+   */
+  BitSet.prototype.or = function(otherBitSet) {
+    if(otherBitSet.size === this.size) {
+      var res = new BitSet(this.size),
+        otherArr = otherBitSet.underlyingArray;
+      for (var i = 0, count = this.size; i < count; i++) {
+        res[i] = this._arr[i] | otherArr[i];
+      }
+
+      return res;
+    }
+    else {
+      throw new Error("BitSet 'or' operation requires both BitSet to be of equal size.");
+    }
+  };
+
+  /**
    * @returns {number} the number of bit currently set.
    */
   Object.defineProperty(BitSet.prototype, "cardinality", {
