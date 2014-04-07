@@ -30,6 +30,24 @@ describe("bit set tests.", function(){
     expect(bitset.cardinality).toBe(0);
   });
 
+  it("should set and get a single bit correctly", function(){
+    bitset = new jsds.BitSet(10);
+    bitset.setBit(5);
+    expect(bitset.getBit(5)).toBe(1);
+  });
+
+  it("should set, clear and get a single bit correctly", function(){
+    bitset = new jsds.BitSet(10);
+
+    expect(bitset.getBit(6)).toBe(0);
+
+    bitset.setBit(6);
+    expect(bitset.getBit(6)).toBe(1);
+
+    bitset.clearBit(6);
+    expect(bitset.getBit(6)).toBe(0);
+  });
+
   describe("BitSet should have the correct cardinality.", function(){
     var bitset = new jsds.BitSet(100);
     bitset.setBit(1);
@@ -64,9 +82,9 @@ describe("bit set tests.", function(){
 
   describe("BitSet should perform logical operation correctly", function(){
     var bitset = new jsds.BitSet(100);
-    bitset.setBit(1).setBit(10).setBit(40).setBit(50).setBit(83);
+    bitset.setBit(1).setBit(10).setBit(50).setBit(83);
     var otherBitset = new jsds.BitSet(100);
-    otherBitset.setBit(2).setBit(15).setBit(40).setBit(70).setBit(83).setBit(84);
+    otherBitset.setBit(2).setBit(10).setBit(40).setBit(83).setBit(84);
     var errBitset = new jsds.BitSet(10);
 
     it("should throw and error on a logical 'and' if the BitSets are of different size", function(){
@@ -84,18 +102,26 @@ describe("bit set tests.", function(){
     });
 
     it("should perform a logical 'and' correctly", function(){
+      debugger;
       var res = bitset.and(otherBitset);
-      expect(res[0]).toBe(0);
-      expect(hex(res[1])).toBe("0x8000000");
-      expect(hex(res[2])).toBe("0x4000");
-      expect(hex(res[3])).toBe("0x0");
+      expect(res.getBit(1)).toBe(0);
+      expect(res.getBit(2)).toBe(0);
+      expect(res.getBit(10)).toBe(1);
+      expect(res.getBit(40)).toBe(0);
+      expect(res.getBit(50)).toBe(0);
+      expect(res.getBit(83)).toBe(1);
+      expect(res.getBit(84)).toBe(0);
     });
 
     it("should perform a logical 'or' correctly", function(){
       var res = bitset.or(otherBitset);
-      expect(hex(res[1])).toBe("0x8002000");
-      expect(hex(res[2])).toBe("0x200c000");
-      expect(hex(res[3])).toBe("0x0");
+      expect(res.getBit(1)).toBe(1);
+      expect(res.getBit(2)).toBe(1);
+      expect(res.getBit(10)).toBe(1);
+      expect(res.getBit(40)).toBe(1);
+      expect(res.getBit(50)).toBe(1);
+      expect(res.getBit(83)).toBe(1);
+      expect(res.getBit(84)).toBe(1);
     });
   });
 

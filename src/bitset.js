@@ -15,14 +15,14 @@ jsds.BitSet = (function(){
    * @type {Array.<number>}
    */
   var BIT_MASK = [
-    0x10000000, 0x20000000, 0x40000000, 0x80000000,
-    0x01000000, 0x02000000, 0x04000000, 0x08000000,
-    0x00100000, 0x00200000, 0x00400000, 0x00800000,
-    0x00010000, 0x00020000, 0x00040000, 0x00080000,
-    0x00001000, 0x00002000, 0x00004000, 0x00008000,
-    0x00000100, 0x00000200, 0x00000400, 0x00000800,
-    0x00000010, 0x00000020, 0x00000040, 0x00000080,
-    0x00000001, 0x00000002, 0x00000004, 0x00000008
+    0x80000000, 0x40000000, 0x20000000, 0x10000000,
+    0x08000000, 0x04000000, 0x02000000, 0x01000000,
+    0x00800000, 0x00400000, 0x00200000, 0x00100000,
+    0x00080000, 0x00040000, 0x00020000, 0x00010000,
+    0x00008000, 0x00004000, 0x00002000, 0x00001000,
+    0x00000800, 0x00000400, 0x00000200, 0x00000100,
+    0x00000080, 0x00000040, 0x00000020, 0x00000010,
+    0x00000008, 0x00000004, 0x00000002, 0x00000001
   ];
 
   /**
@@ -59,6 +59,19 @@ jsds.BitSet = (function(){
 
   /**
    * @param {number} bitIndex , the index of the bit to modify. Indices starts from 1.
+   * @returns {number} 0 or 1.
+   */
+  BitSet.prototype.getBit = function(bitIndex) {
+    bitIndex = bitIndex - 1;
+
+    var arrIndex = bitIndex >> DIVIDER;
+    var bitMasktIndex = bitIndex - arrIndex * WORD_SIZE;
+
+    return (this._arr[arrIndex] & BIT_MASK[bitMasktIndex]) >>> (WORD_SIZE - bitMasktIndex - 1);
+  };
+
+  /**
+   * @param {number} bitIndex , the index of the bit to modify. Indices starts from 1.
    */
   BitSet.prototype.clearBit = function(bitIndex) {
     bitIndex = bitIndex - 1;
@@ -76,10 +89,9 @@ jsds.BitSet = (function(){
    */
   BitSet.prototype.and = function(otherBitSet) {
     if(otherBitSet.size === this.size) {
-      var res = new BitSet(this.size),
-          otherArr = otherBitSet.underlyingArray;
+      var res = new BitSet(this.size * WORD_SIZE - 1);
       for (var i = 0, count = this.size; i < count; i++) {
-        res[i] = this._arr[i] & otherArr[i];
+        res.setBitsInWordAt(i, this._arr[i] & otherBitSet.getBitsInWordAt(i));
       }
 
       return res;
@@ -94,10 +106,9 @@ jsds.BitSet = (function(){
    */
   BitSet.prototype.or = function(otherBitSet) {
     if(otherBitSet.size === this.size) {
-      var res = new BitSet(this.size),
-        otherArr = otherBitSet.underlyingArray;
+      var res = new BitSet(this.size * WORD_SIZE - 1);
       for (var i = 0, count = this.size; i < count; i++) {
-        res[i] = this._arr[i] | otherArr[i];
+        res.setBitsInWordAt(i, this._arr[i] | otherBitSet.getBitsInWordAt(i));
       }
 
       return res;
@@ -105,6 +116,14 @@ jsds.BitSet = (function(){
     else {
       throw new Error("BitSet 'or' operation requires both BitSet to be of equal size.");
     }
+  };
+
+  BitSet.prototype.setBitsInWordAt = function(index, value) {
+    this._arr[index] = value;
+  };
+
+  BitSet.prototype.getBitsInWordAt = function(index) {
+    return this._arr[index];
   };
 
   /**
